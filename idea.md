@@ -6,7 +6,7 @@
 
 HireLens AI is a full-stack AI-powered hiring intelligence platform designed to assist recruiters in making data-driven hiring decisions and help candidates understand and improve their job competitiveness.
 
-The system analyzes resumes and job descriptions using Natural Language Processing (NLP) and embedding-based similarity scoring. It ranks candidates, identifies skill gaps, generates personalized learning roadmaps, and continuously improves its scoring model using recruiter feedback.
+The system analyzes resumes and job descriptions using keyword extraction and weighted overlap scoring. It ranks candidates, identifies skill gaps, and continuously improves its scoring model using recruiter feedback.
 
 The core objective of the system is to move beyond keyword-based resume screening and provide explainable, adaptive, and data-backed candidate evaluation.
 
@@ -37,13 +37,11 @@ HireLens AI provides:
 2. Job Description Intelligence Engine  
 3. AI-Based Matching & Ranking System  
 4. Skill Gap Analyzer  
-5. Personalized Learning Roadmap Generator  
-6. Adaptive Scoring Engine (Feedback-driven improvement)  
-7. Analytics & Model Performance Tracking  
+5. Analytics & Model Performance Tracking  
 
-The system uses embedding-based similarity scoring combined with weighted feature analysis to compute match scores between candidates and job descriptions.
+The system uses keyword-overlap scoring combined with weighted feature analysis to compute match scores between candidates and job descriptions.
 
-Recruiter feedback is used to dynamically adjust scoring weights, enabling the system to improve ranking accuracy over time.
+Recruiter feedback is stored and used to track scoring accuracy over time.
 
 ---
 
@@ -58,7 +56,6 @@ Recruiter feedback is used to dynamically adjust scoring weights, enabling the s
 - View job match scores
 - Detailed skill match breakdown
 - Skill gap identification
-- Personalized learning roadmap
 - Resume version tracking & progress comparison
 
 ---
@@ -81,9 +78,7 @@ Recruiter feedback is used to dynamically adjust scoring weights, enabling the s
 - View system usage analytics
 - Monitor model performance metrics
 - Track feedback trends
-- Adjust scoring weights
-- Monitor bias indicators
-- Model version management
+- View feedback trends
 
 ---
 
@@ -92,18 +87,16 @@ Recruiter feedback is used to dynamically adjust scoring weights, enabling the s
 ### 5.1 Resume Intelligence Engine
 - PDF to text extraction
 - NLP preprocessing
-- Skill extraction using dictionary + NER
-- Embedding vector generation
+- Skill extraction using dictionary + keyword matching
 - Structured resume storage
 
 ### 5.2 Job Intelligence Engine
 - Required skill extraction
 - Experience range detection
-- Embedding generation
 - Job categorization
 
 ### 5.3 Matching Engine
-- Cosine similarity scoring
+- Keyword-overlap skill scoring
 - Weighted scoring model
 - Multi-factor match calculation:
   - Skill similarity
@@ -116,18 +109,6 @@ Recruiter feedback is used to dynamically adjust scoring weights, enabling the s
 - Missing skill detection
 - Skill importance ranking
 - Match improvement impact estimation
-
-### 5.5 Learning Roadmap Generator
-- Skill-priority-based roadmap
-- Timeline estimation
-- Resource suggestions
-
-### 5.6 Adaptive Scoring Engine
-- Feedback collection
-- Prediction vs actual decision analysis
-- Dynamic weight adjustment
-- Model version tracking
-- Performance metric calculation
 
 ---
 
@@ -153,12 +134,11 @@ The backend follows a layered architecture:
 - Repositories → Database operations
 - Models → Data schemas
 - Strategy Layer → Scoring algorithms
-- AI Service Layer → NLP and embedding processing
 
 Design Patterns Used:
 - Repository Pattern
-- Strategy Pattern (Scoring Models)
-- Factory Pattern (Model selection)
+- Strategy Pattern (KeywordOverlapStrategy, TFIDFStrategy)
+- Factory Pattern (Strategy selection)
 - Observer Pattern (Feedback-based updates)
 
 ---
@@ -175,13 +155,9 @@ Backend:
 Database:
 - MongoDB
 
-AI/ML Layer:
-- Python microservice (NLP, embeddings)
-- Cosine similarity computation
+AI/Scoring Layer:
+- Node.js keyword extraction utility and weighted overlap scoring logic (built-in)
 - Weighted scoring logic
-
-Vector Storage:
-- MongoDB Atlas Vector Search
 
 Authentication:
 - JWT
@@ -203,8 +179,14 @@ The system will:
 
 ## 10. Future Enhancements
 
-- Bias detection and fairness monitoring
-- Multi-model ensemble scoring
-- Real-time collaboration tools
-- Resume improvement simulation
-- AI-powered interview question generator
+The following features were intentionally excluded from the current implementable scope and are planned for future iterations:
+
+1. **Python AI Microservice** — NLP-based text processing, named entity recognition for skill extraction, embedding vector generation using sentence transformers
+2. **Embedding-Based Matching (EmbeddingStrategy)** — Semantic similarity scoring using cosine distance on embedding vectors instead of keyword overlap
+3. **MongoDB Atlas Vector Search** — Vector storage and retrieval for resume and JD embeddings
+4. **Adaptive Scoring Engine** — Dynamically adjusts scoring weights (skill, experience, project, domain) based on historical recruiter feedback using an Observer pattern
+5. **Learning Roadmap Generator** — Generates a prioritized, timeline-based upskilling roadmap with resource suggestions based on identified skill gaps
+6. **MODEL_VERSION & MODEL_PERFORMANCE tracking** — Database layer for versioning scoring models and storing precision/recall/accuracy metrics over time
+7. **Bias Detection & Fairness Monitoring** — Admin-level monitoring for demographic or skill-group bias in candidate rankings
+8. **Multi-Model Ensemble Scoring** — Combining outputs from multiple scoring strategies for more robust match accuracy
+9. **AI-Powered Interview Question Generator** — Auto-generates role-specific interview questions based on JD and candidate skill gaps

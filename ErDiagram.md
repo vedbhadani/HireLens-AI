@@ -87,6 +87,8 @@ MATCH_RESULT {
     number skillScore
     number experienceScore
     number projectScore
+    string matchedSkills
+    string missingSkills
     string explanation
     date createdAt
 }
@@ -99,26 +101,6 @@ FEEDBACK {
     number rating
     string comments
     date createdAt
-}
-
-MODEL_VERSION {
-    string _id PK
-    string versionName
-    number skillWeight
-    number experienceWeight
-    number projectWeight
-    number domainWeight
-    date createdAt
-}
-
-MODEL_PERFORMANCE {
-    string _id PK
-    string modelVersionId FK
-    number precision
-    number recall
-    number accuracy
-    number falsePositiveRate
-    date evaluatedAt
 }
 
 ANALYTICS_EVENT {
@@ -147,8 +129,21 @@ JOB_DESCRIPTION ||--o{ MATCH_RESULT : generates
 
 MATCH_RESULT ||--o{ FEEDBACK : receives
 
-MODEL_VERSION ||--o{ MATCH_RESULT : influences
-MODEL_VERSION ||--o{ MODEL_PERFORMANCE : evaluated
-
 USER ||--o{ ANALYTICS_EVENT : generates
 ```
+
+---
+
+## Planned Enhancements
+
+> The following entities and features were intentionally excluded from the current implementable scope and are planned for future iterations:
+
+1. **Python AI Microservice** — NLP-based text processing, named entity recognition for skill extraction, embedding vector generation using sentence transformers
+2. **Embedding-Based Matching (EmbeddingStrategy)** — Semantic similarity scoring using cosine distance on embedding vectors instead of keyword overlap
+3. **MongoDB Atlas Vector Search** — Vector storage and retrieval for resume and JD embeddings
+4. **Adaptive Scoring Engine** — Dynamically adjusts scoring weights (skill, experience, project, domain) based on historical recruiter feedback using an Observer pattern
+5. **Learning Roadmap Generator** — Generates a prioritized, timeline-based upskilling roadmap with resource suggestions based on identified skill gaps
+6. **MODEL_VERSION & MODEL_PERFORMANCE tracking** — Database layer for versioning scoring models and storing precision/recall/accuracy metrics over time
+7. **Bias Detection & Fairness Monitoring** — Admin-level monitoring for demographic or skill-group bias in candidate rankings
+8. **Multi-Model Ensemble Scoring** — Combining outputs from multiple scoring strategies for more robust match accuracy
+9. **AI-Powered Interview Question Generator** — Auto-generates role-specific interview questions based on JD and candidate skill gaps

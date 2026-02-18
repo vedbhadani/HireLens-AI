@@ -22,7 +22,6 @@ class Candidate {
   +uploadResume()
   +viewMatchScores()
   +viewSkillGap()
-  +generateLearningRoadmap()
 }
 
 class Recruiter {
@@ -33,8 +32,7 @@ class Recruiter {
 
 class Admin {
   +viewSystemAnalytics()
-  +adjustScoringWeights()
-  +monitorModelPerformance()
+  +viewFeedbackTrends()
 }
 
 User <|-- Candidate
@@ -52,9 +50,7 @@ class Resume {
   -skills: List
   -experienceYears: Number
   -projects: List
-  -embeddingVector: Vector
   +parseResume()
-  +generateEmbedding()
 }
 
 class JobDescription {
@@ -62,9 +58,7 @@ class JobDescription {
   -recruiterId: String
   -requiredSkills: List
   -experienceRequired: Number
-  -embeddingVector: Vector
   +parseJD()
-  +generateEmbedding()
 }
 
 class MatchResult {
@@ -87,7 +81,35 @@ class Feedback {
 
 
 %% ========================
-%% AI & Strategy Layer
+%% Service Layer
+%% ========================
+
+class ResumeService {
+  +processResume(file)
+  +getResumeById(id)
+  +getResumesByCandidate(candidateId)
+}
+
+class JDService {
+  +processJD(text)
+  +getJDById(id)
+  +getJDsByRecruiter(recruiterId)
+}
+
+class MatchService {
+  +generateMatches(jobId)
+  +getMatchResult(resumeId, jobId)
+  +getRankedCandidates(jobId)
+}
+
+class SkillExtractorService {
+  +extractSkills(text) List
+  +normalizeSkills(skills) List
+}
+
+
+%% ========================
+%% Strategy Layer
 %% ========================
 
 class MatchingEngine {
@@ -102,7 +124,7 @@ class ScoringStrategy {
   +calculateScore(resume, jobDescription)
 }
 
-class EmbeddingStrategy {
+class KeywordOverlapStrategy {
   +calculateScore(resume, jobDescription)
 }
 
@@ -110,19 +132,10 @@ class TFIDFStrategy {
   +calculateScore(resume, jobDescription)
 }
 
-ScoringStrategy <|.. EmbeddingStrategy
+ScoringStrategy <|.. KeywordOverlapStrategy
 ScoringStrategy <|.. TFIDFStrategy
 
 MatchingEngine --> ScoringStrategy
-
-
-class AdaptiveScoringEngine {
-  -modelWeights: Map
-  +updateWeights()
-  +evaluatePerformance()
-}
-
-Feedback --> AdaptiveScoringEngine
 
 
 %% ========================
@@ -138,4 +151,24 @@ MatchResult "1" --> "0..1" Feedback
 MatchingEngine --> Resume
 MatchingEngine --> JobDescription
 MatchResult --> MatchingEngine
+
+ResumeService --> SkillExtractorService
+JDService --> SkillExtractorService
+MatchService --> MatchingEngine
 ```
+
+---
+
+## Planned Enhancements
+
+> The following classes and features were intentionally excluded from the current implementable scope and are planned for future iterations:
+
+1. **Python AI Microservice** — NLP-based text processing, named entity recognition for skill extraction, embedding vector generation using sentence transformers
+2. **Embedding-Based Matching (EmbeddingStrategy)** — Semantic similarity scoring using cosine distance on embedding vectors instead of keyword overlap
+3. **MongoDB Atlas Vector Search** — Vector storage and retrieval for resume and JD embeddings
+4. **Adaptive Scoring Engine** — Dynamically adjusts scoring weights (skill, experience, project, domain) based on historical recruiter feedback using an Observer pattern
+5. **Learning Roadmap Generator** — Generates a prioritized, timeline-based upskilling roadmap with resource suggestions based on identified skill gaps
+6. **MODEL_VERSION & MODEL_PERFORMANCE tracking** — Database layer for versioning scoring models and storing precision/recall/accuracy metrics over time
+7. **Bias Detection & Fairness Monitoring** — Admin-level monitoring for demographic or skill-group bias in candidate rankings
+8. **Multi-Model Ensemble Scoring** — Combining outputs from multiple scoring strategies for more robust match accuracy
+9. **AI-Powered Interview Question Generator** — Auto-generates role-specific interview questions based on JD and candidate skill gaps

@@ -1,5 +1,5 @@
 # Sequence Diagram – HireLens AI  
-## Main Flow: Resume Upload → Matching → Feedback → Adaptive Update
+## Main Flow: Resume Upload → Matching → Feedback → Skill Gap View
 
 ```mermaid
 sequenceDiagram
@@ -17,10 +17,9 @@ participant FeedbackController
 participant ResumeService
 participant JDService
 participant MatchService
-participant AdaptiveScoringEngine
 participant MatchingEngine
+participant SkillExtractorService
 
-participant AIService
 participant ResumeRepository
 participant JDRepository
 participant MatchRepository
@@ -36,11 +35,11 @@ Candidate ->> Frontend: Upload Resume (PDF)
 Frontend ->> ResumeController: POST /resume
 
 ResumeController ->> ResumeService: processResume(file)
-ResumeService ->> AIService: extractText + extractSkills
-AIService -->> ResumeService: structuredData
+ResumeService ->> SkillExtractorService: extractSkills(rawText)
+SkillExtractorService -->> ResumeService: extractedSkills
 
-ResumeService ->> AIService: generateEmbedding
-AIService -->> ResumeService: embeddingVector
+ResumeService ->> SkillExtractorService: normalizeSkills(extractedSkills)
+SkillExtractorService -->> ResumeService: normalizedSkills
 
 ResumeService ->> ResumeRepository: save(resume)
 ResumeRepository ->> Database: insert resume
@@ -59,11 +58,11 @@ Recruiter ->> Frontend: Upload Job Description
 Frontend ->> JDController: POST /job
 
 JDController ->> JDService: processJD(text)
-JDService ->> AIService: extractSkills
-AIService -->> JDService: structuredJD
+JDService ->> SkillExtractorService: extractSkills(rawText)
+SkillExtractorService -->> JDService: extractedSkills
 
-JDService ->> AIService: generateEmbedding
-AIService -->> JDService: jdEmbedding
+JDService ->> SkillExtractorService: normalizeSkills(extractedSkills)
+SkillExtractorService -->> JDService: normalizedSkills
 
 JDService ->> JDRepository: save(job)
 JDRepository ->> Database: insert job
@@ -89,7 +88,7 @@ Database -->> ResumeRepository: resumesList
 
 MatchService ->> MatchingEngine: computeMatchScores(resumes, job)
 
-MatchingEngine ->> MatchingEngine: cosineSimilarity()
+MatchingEngine ->> MatchingEngine: keywordOverlapScore()
 MatchingEngine ->> MatchingEngine: weightedScoreCalculation()
 
 MatchingEngine -->> MatchService: rankedResults
@@ -103,7 +102,7 @@ MatchController -->> Frontend: Display Ranked List
 
 
 %% =========================
-%% 4️⃣ Feedback & Adaptive Update
+%% 4️⃣ Feedback Flow
 %% =========================
 
 Recruiter ->> Frontend: Provide Feedback
@@ -113,15 +112,39 @@ FeedbackController ->> FeedbackRepository: save(feedback)
 FeedbackRepository ->> Database: insert feedback
 Database -->> FeedbackRepository: success
 
-FeedbackController ->> AdaptiveScoringEngine: updateWeights()
+FeedbackRepository -->> FeedbackController: savedFeedback
+FeedbackController -->> Frontend: Feedback Submitted
 
-AdaptiveScoringEngine ->> MatchRepository: fetchHistoricalMatches()
-MatchRepository ->> Database: query matches
-Database -->> MatchRepository: matchData
 
-AdaptiveScoringEngine ->> AdaptiveScoringEngine: evaluatePerformance()
-AdaptiveScoringEngine ->> AdaptiveScoringEngine: adjustWeights()
+%% =========================
+%% 5️⃣ Candidate Skill Gap View
+%% =========================
 
-AdaptiveScoringEngine -->> FeedbackController: weightsUpdated
-FeedbackController -->> Frontend: Feedback Processed
+Candidate ->> Frontend: View Skill Gap
+Frontend ->> MatchController: GET /match/candidate/:resumeId/:jobId
+
+MatchController ->> MatchService: getMatchResult(resumeId, jobId)
+MatchService ->> MatchRepository: findByResumeAndJob(resumeId, jobId)
+MatchRepository ->> Database: query matchResult
+Database -->> MatchRepository: matchResult
+
+MatchRepository -->> MatchService: matchResult
+MatchService -->> MatchController: matchResult with missingSkills
+MatchController -->> Frontend: Display Skill Gap Analysis
 ```
+
+---
+
+## Planned Enhancements
+
+> The following flows and features were intentionally excluded from the current implementable scope and are planned for future iterations:
+
+1. **Python AI Microservice** — NLP-based text processing, named entity recognition for skill extraction, embedding vector generation using sentence transformers
+2. **Embedding-Based Matching (EmbeddingStrategy)** — Semantic similarity scoring using cosine distance on embedding vectors instead of keyword overlap
+3. **MongoDB Atlas Vector Search** — Vector storage and retrieval for resume and JD embeddings
+4. **Adaptive Scoring Engine** — Dynamically adjusts scoring weights (skill, experience, project, domain) based on historical recruiter feedback using an Observer pattern
+5. **Learning Roadmap Generator** — Generates a prioritized, timeline-based upskilling roadmap with resource suggestions based on identified skill gaps
+6. **MODEL_VERSION & MODEL_PERFORMANCE tracking** — Database layer for versioning scoring models and storing precision/recall/accuracy metrics over time
+7. **Bias Detection & Fairness Monitoring** — Admin-level monitoring for demographic or skill-group bias in candidate rankings
+8. **Multi-Model Ensemble Scoring** — Combining outputs from multiple scoring strategies for more robust match accuracy
+9. **AI-Powered Interview Question Generator** — Auto-generates role-specific interview questions based on JD and candidate skill gaps
