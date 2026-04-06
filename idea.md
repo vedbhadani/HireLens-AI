@@ -76,8 +76,6 @@ Recruiter feedback is stored and used to track scoring accuracy over time.
 ### 4.3 Admin Module
 
 - View system usage analytics
-- Monitor model performance metrics
-- Track feedback trends
 - View feedback trends
 
 ---
@@ -139,7 +137,6 @@ Design Patterns Used:
 - Repository Pattern
 - Strategy Pattern (KeywordOverlapStrategy, TFIDFStrategy)
 - Factory Pattern (Strategy selection)
-- Observer Pattern (Feedback-based updates)
 
 ---
 
@@ -172,7 +169,7 @@ The system will:
 - Reduce manual resume screening effort
 - Provide explainable candidate ranking
 - Offer structured skill gap insights
-- Enable adaptive improvement using recruiter feedback
+- Store recruiter feedback for future model improvement
 - Demonstrate practical integration of MERN stack with AI/ML concepts
 
 ---
