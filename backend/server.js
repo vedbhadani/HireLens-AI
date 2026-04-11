@@ -9,6 +9,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const resumeRoutes = require('./routes/resumeRoutes');
 const jobRoutes = require('./routes/jobRoutes');
+const matchRoutes = require('./routes/matchRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 // Connect to database
@@ -43,7 +44,8 @@ app.use('/api/auth', authLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/jobs', jobRoutes);
-// Error handling middleware
+app.use('/api/matches', matchRoutes);
+
 app.use(notFound);
 app.use(errorHandler);
 
