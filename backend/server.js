@@ -10,6 +10,9 @@ const authRoutes = require('./routes/authRoutes');
 const resumeRoutes = require('./routes/resumeRoutes');
 const jobRoutes = require('./routes/jobRoutes');
 const matchRoutes = require('./routes/matchRoutes');
+const skillGapRoutes = require('./routes/skillGapRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 // Connect to database
@@ -45,6 +48,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/matches', matchRoutes);
+app.use('/api/skill-gap', skillGapRoutes);
+app.use('/api/feedback', feedbackRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
