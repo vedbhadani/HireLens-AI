@@ -1,14 +1,13 @@
-# HireLens AI - Adaptive AI Hiring & Skill Intelligence Platform
+# HireLens AI
+## Hiring Intelligence Platform
 
 ---
 
 ## 1. Project Overview
 
-HireLens AI is a full-stack AI-powered hiring intelligence platform designed to assist recruiters in making data-driven hiring decisions and help candidates understand and improve their job competitiveness.
+HireLens AI is a full-stack hiring intelligence platform that helps recruiters make data-driven hiring decisions and helps candidates understand their job competitiveness.
 
-The system analyzes resumes and job descriptions using keyword extraction and weighted overlap scoring. It ranks candidates, identifies skill gaps, and continuously improves its scoring model using recruiter feedback.
-
-The core objective of the system is to move beyond keyword-based resume screening and provide explainable, adaptive, and data-backed candidate evaluation.
+The system parses resumes, extracts skills, matches candidates to job descriptions using a keyword overlap scoring strategy, identifies skill gaps, collects recruiter feedback, and provides analytics.
 
 ---
 
@@ -16,16 +15,10 @@ The core objective of the system is to move beyond keyword-based resume screenin
 
 Recruitment processes today face several challenges:
 
-- Manual resume screening is time-consuming and inconsistent.
-- Keyword-based Applicant Tracking Systems (ATS) fail to capture contextual relevance.
-- Candidates receive little to no structured feedback.
-- Hiring decisions are rarely used to improve future screening accuracy.
-
-There is a need for an intelligent system that:
-- Understands contextual skill relevance
-- Provides transparent match explanations
-- Learns from recruiter decisions
-- Assists candidates in structured upskilling
+- Manual resume screening is time-consuming and inconsistent
+- Candidates receive little to no structured feedback after rejection
+- Recruiters have no structured view of candidate ranking or skill alignment
+- There is no mechanism for hiring systems to improve over time based on outcomes
 
 ---
 
@@ -33,157 +26,174 @@ There is a need for an intelligent system that:
 
 HireLens AI provides:
 
-1. Resume Intelligence Engine  
-2. Job Description Intelligence Engine  
-3. AI-Based Matching & Ranking System  
-4. Skill Gap Analyzer  
-5. Analytics & Model Performance Tracking  
-
-The system uses keyword-overlap scoring combined with weighted feature analysis to compute match scores between candidates and job descriptions.
-
-Recruiter feedback is stored and used to track scoring accuracy over time.
+1. Resume parsing and skill extraction
+2. Job description creation with auto skill extraction
+3. Candidate-job matching with scored results
+4. Skill gap analysis per resume-job combination
+5. Recruiter feedback collection with ratings and comments
+6. Analytics for recruiters and admins
 
 ---
 
 ## 4. System Scope
 
 ### 4.1 Candidate Module
-
-- User registration & authentication
-- Resume upload (PDF)
-- Resume parsing & structured skill extraction
-- Experience estimation
-- View job match scores
-- Detailed skill match breakdown
-- Skill gap identification
-- Resume version tracking & progress comparison
-
----
+- Register and login
+- Upload resume (PDF)
+- View extracted skills from resume
+- Browse available job postings
+- Trigger match against a job
+- View match score with matched and missing skills
+- View skill gap analysis with coverage percentage
+- View feedback received from recruiters
 
 ### 4.2 Recruiter Module
-
-- Job description upload
-- Required skill extraction
-- Seniority detection
-- Candidate ranking dashboard
-- Match score explanation view
-- Feedback submission (Selected / Rejected / Strong Match)
-- Candidate comparison view
-- Hiring analytics dashboard
-
----
+- Register and login
+- Create job descriptions with auto skill extraction
+- View all posted jobs
+- View candidates ranked by match score per job
+- Submit star rating and comment feedback per candidate
+- View per-job analytics
 
 ### 4.3 Admin Module
-
-- View system usage analytics
-- View feedback trends
-
----
-
-## 5. Core Functional Features
-
-### 5.1 Resume Intelligence Engine
-- PDF to text extraction
-- NLP preprocessing
-- Skill extraction using dictionary + keyword matching
-- Structured resume storage
-
-### 5.2 Job Intelligence Engine
-- Required skill extraction
-- Experience range detection
-- Job categorization
-
-### 5.3 Matching Engine
-- Keyword-overlap skill scoring
-- Weighted scoring model
-- Multi-factor match calculation:
-  - Skill similarity
-  - Experience alignment
-  - Project relevance
-  - Domain similarity
-- Match score persistence
-
-### 5.4 Skill Gap Analyzer
-- Missing skill detection
-- Skill importance ranking
-- Match improvement impact estimation
+- View system-wide counts via analytics summary endpoint
+- Role exists and is enforced via middleware
 
 ---
 
-## 6. Non-Functional Requirements
+## 5. Implemented Features
 
-- Secure authentication (JWT-based)
-- Role-Based Access Control (RBAC)
-- Input validation and sanitization
-- Scalable modular backend architecture
-- RESTful API design
-- Clean separation of concerns
-- Logging & error handling
-- Version control with regular commits
+### Authentication & Security
+- JWT access tokens with 15 minute expiry
+- Refresh token rotation with MongoDB storage and TTL auto-deletion
+- bcrypt password hashing
+- Role-based access control (candidate / recruiter / admin)
+- Helmet security headers
+- Rate limiting on auth routes
+- Scoped CORS
+
+### Resume Intelligence
+- PDF upload with multer (type and size validation)
+- Text extraction via pdf-parse
+- Keyword-based skill extraction against a dictionary of 50+ tech skills
+- Resume stored with extracted skills and parse status
+
+### Job Description Intelligence
+- Job creation with title, company, description
+- Skill extraction reusing the same `SkillExtractorService`
+- Skills auto re-extracted on description update
+- Soft delete
+
+### Matching Engine
+- `ScoringStrategy` abstract base class
+- `KeywordOverlapStrategy` implementation — score = matched skills / total required skills × 100
+- `MatchingEngine` class accepts any strategy (Strategy Pattern)
+- Match results stored with score, matched skills, missing skills
+- Ranked candidates sorted by score descending with populate
+
+### Skill Gap Analyzer
+- Returns matched skills, missing skills, coverage percentage per resume-job pair
+
+### Feedback System
+- Recruiter submits 1–5 star rating with optional comment per candidate per job
+- Duplicate submission guard
+- Candidate views all received feedback
+- Recruiter revisit shows already-submitted state fetched from DB
+
+### Analytics
+- Admin summary: total users, resumes, jobs, matches
+- Recruiter job analytics: match count, feedback count, average rating
+
+### Frontend
+- Login and register with role selection
+- Resume upload with persistent history
+- Browse jobs with match trigger and skill gap navigation
+- My Matches with score color coding
+- Skill gap analysis page
+- Create job, My Jobs with delete and view candidates
+- Ranked candidates with inline feedback form
+- My Feedback with star display
 
 ---
 
-## 7. System Architecture
+## 6. Architecture
 
-The backend follows a layered architecture:
-
-- Controllers → Handle HTTP requests
+**Backend layers:**
+- Controllers → HTTP request handling
 - Services → Business logic
-- Repositories → Database operations
-- Models → Data schemas
-- Strategy Layer → Scoring algorithms
+- Repositories → All DB operations
 
-Design Patterns Used:
-- Repository Pattern
-- Strategy Pattern (KeywordOverlapStrategy, TFIDFStrategy)
-- Factory Pattern (Strategy selection)
+**Design Patterns:**
+- Repository Pattern — full DB abstraction, no Mongoose outside repositories
+- Strategy Pattern — `ScoringStrategy` interface, `KeywordOverlapStrategy` implementation, pluggable via `MatchingEngine`
 
----
-
-## 8. Technology Stack
-
-Frontend:
-- React.js
-
-Backend:
-- Node.js
-- Express.js
-
-Database:
-- MongoDB
-
-AI/Scoring Layer:
-- Node.js keyword extraction utility and weighted overlap scoring logic (built-in)
-- Weighted scoring logic
-
-Authentication:
-- JWT
-- Bcrypt
+**Security layer:**
+- `protect` middleware — JWT verification + deleted-user guard
+- `authorize` middleware — role enforcement
 
 ---
 
-## 9. Expected Outcome
+## 7. Technology Stack
 
-The system will:
-
-- Reduce manual resume screening effort
-- Provide explainable candidate ranking
-- Offer structured skill gap insights
-- Store recruiter feedback for future model improvement
-- Demonstrate practical integration of MERN stack with AI/ML concepts
+- Frontend: React + Vite, React Router, Axios
+- Backend: Node.js, Express.js
+- Database: MongoDB, Mongoose
+- Auth: JWT, bcryptjs
+- File handling: multer, pdf-parse
+- Security: helmet, express-rate-limit, cors
 
 ---
 
-## 10. Future Enhancements
+## 8. Future Enhancements
 
-The following features were intentionally excluded from the current implementable scope and are planned for future iterations:
+The following features were planned in the original system design but are not currently implemented. They are documented here for the next development phase.
 
-1. **Python AI Microservice** — NLP-based text processing, named entity recognition for skill extraction, embedding vector generation using sentence transformers
-2. **Embedding-Based Matching (EmbeddingStrategy)** — Semantic similarity scoring using cosine distance on embedding vectors instead of keyword overlap
-3. **MongoDB Atlas Vector Search** — Vector storage and retrieval for resume and JD embeddings
-4. **Adaptive Scoring Engine** — Dynamically adjusts scoring weights (skill, experience, project, domain) based on historical recruiter feedback using an Observer pattern
-5. **Learning Roadmap Generator** — Generates a prioritized, timeline-based upskilling roadmap with resource suggestions based on identified skill gaps
-6. **MODEL_VERSION & MODEL_PERFORMANCE tracking** — Database layer for versioning scoring models and storing precision/recall/accuracy metrics over time
-7. **Bias Detection & Fairness Monitoring** — Admin-level monitoring for demographic or skill-group bias in candidate rankings
-8. **Multi-Model Ensemble Scoring** — Combining outputs from multiple scoring strategies for more robust match accuracy
-9. **AI-Powered Interview Question Generator** — Auto-generates role-specific interview questions based on JD and candidate skill gaps
+### 8.1 Adaptive Scoring Engine
+The feedback system currently stores recruiter ratings but does not use them to adjust scoring. The planned system would:
+- Track initial match score vs recruiter decision (selected/rejected)
+- Identify where the model mispredicted
+- Dynamically adjust scoring weights over time
+- Maintain a `ModelWeights` collection with version history
+- Track precision, recall, and accuracy per model version
+
+This is the most significant planned enhancement and would make the system genuinely self-improving.
+
+### 8.2 Multi-Factor Weighted Matching
+The current matching engine uses only skill keyword overlap. The planned formula was:
+MatchScore =
+0.4 × SkillSimilarity
+0.2 × ExperienceMatch
+0.2 × ProjectRelevance
+0.2 × DomainSimilarity
+
+This requires experience extraction from resume text and project categorization.
+
+### 8.3 Second Scoring Strategy (TF-IDF)
+A `TFIDFStrategy` was planned as the second implementation of `ScoringStrategy` to demonstrate the full value of the Strategy Pattern. Currently only `KeywordOverlapStrategy` exists.
+
+### 8.4 Experience and Project Extraction
+The Resume model currently stores raw text and extracted skills only. Planned fields include:
+- `experienceYears` — extracted via regex from resume text
+- `projects` — categorized project list with tech stack detection
+
+### 8.5 Match Explanation
+Each `MatchResult` was planned to include a human-readable explanation string such as:
+> "Ranked #1 — matched 4 of 5 required skills (react, node.js, mongodb, express). Experience aligns with requirement."
+
+### 8.6 Learning Roadmap Generator
+The skill gap endpoint returns missing skills but does not generate a roadmap. The planned enhancement would return:
+- Skills prioritized by impact on match score
+- Estimated learning timeline per skill
+- Suggested resource links per skill
+
+### 8.7 Admin Dashboard (Frontend)
+The admin role is implemented and protected on the backend. A frontend dashboard for admins showing system analytics, model performance, and scoring weight management is not yet built.
+
+### 8.8 Embedding-Based Similarity
+The current skill extraction is keyword matching. A more robust approach would use text embeddings and cosine similarity to capture contextual relevance — for example matching "React developer" to "frontend engineer" without an exact keyword match.
+
+### 8.9 Market Competitiveness Index
+A planned feature to show candidates their percentile ranking among all candidates for a given role type — for example "Top 23% for Junior Backend roles".
+
+### 8.10 Resume Version Comparison
+Allow candidates to upload multiple resume versions and compare match score improvements over time to track skill development.
