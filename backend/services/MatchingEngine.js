@@ -1,4 +1,4 @@
-const KeywordOverlapStrategy = require('./Strategies/KeywordOverlapStrategy');
+const KeywordOverlapStrategy = require('./strategies/KeywordOverlapStrategy');
 
 class MatchingEngine {
   constructor(strategy) {
