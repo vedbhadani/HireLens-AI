@@ -28,7 +28,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:3000' }));
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+app.use(
+  cors({
+    origin: clientUrl.endsWith('/') ? clientUrl.slice(0, -1) : clientUrl,
+    credentials: true,
+  })
+);
 
 // Health check
 app.get('/', (req, res) => {
