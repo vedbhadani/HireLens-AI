@@ -27,4 +27,11 @@ router.get(
   feedbackController.getMyFeedback.bind(feedbackController)
 );
 
+router.get(
+  '/job/:jobId',
+  protect,
+  authorize('recruiter'),
+  feedbackController.getJobFeedbacks.bind(feedbackController)
+);
+
 module.exports = router;

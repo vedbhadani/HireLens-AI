@@ -17,6 +17,10 @@ class FeedbackRepository {
     return await Feedback.find({ jobId }).sort({ createdAt: -1 });
   }
 
+  async findByJobForRecruiter(jobId, recruiterId) {
+    return await Feedback.find({ jobId, recruiterId });
+  }
+
   async findExisting(recruiterId, candidateId, jobId) {
     return await Feedback.findOne({ recruiterId, candidateId, jobId });
   }

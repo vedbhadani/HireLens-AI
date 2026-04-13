@@ -33,6 +33,18 @@ class FeedbackController {
       next(error);
     }
   }
+
+  async getJobFeedbacks(req, res, next) {
+    try {
+      const feedbacks = await feedbackService.getJobFeedbacks(
+        req.params.jobId,
+        req.user._id
+      );
+      return res.status(200).json({ feedbacks });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new FeedbackController();

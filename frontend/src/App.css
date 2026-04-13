@@ -1,0 +1,384 @@
+/* ===== Auth Pages ===== */
+
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: var(--space-xl);
+  background: var(--color-card);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  background: var(--color-white);
+}
+
+.auth-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-dark);
+  margin-bottom: 4px;
+}
+
+.auth-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xl);
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: var(--space-sm);
+}
+
+.auth-footer-text {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-lg);
+}
+
+/* Role Toggle */
+.role-toggle {
+  display: flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  overflow: hidden;
+}
+
+.role-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  border: none;
+  background: var(--color-white);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.role-btn.role-active {
+  background: var(--color-dark);
+  color: var(--color-white);
+}
+
+/* ===== Dashboard Pages ===== */
+
+.dashboard-welcome {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-dark);
+  margin-bottom: var(--space-xl);
+  letter-spacing: -0.5px;
+}
+
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.summary-card {
+  background: var(--color-white);
+  border-radius: var(--radius-card);
+  padding: var(--space-xl);
+  border: 1px solid var(--color-border);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.summary-card-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-sm);
+}
+
+.summary-card-value {
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--color-dark);
+  letter-spacing: -1px;
+}
+
+.quick-actions {
+  display: flex;
+  gap: var(--space-md);
+}
+
+/* ===== Page-level card list ===== */
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.card-list .card {
+  transition: box-shadow 0.2s;
+}
+
+/* ===== Job Card ===== */
+
+.job-card-header {
+  margin-bottom: var(--space-sm);
+}
+
+.job-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.job-company {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.job-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--space-sm);
+}
+
+.pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--space-md);
+}
+
+.card-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* ===== Match Card ===== */
+
+.match-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-sm);
+}
+
+.match-skills-section {
+  margin-top: var(--space-sm);
+}
+
+.match-skills-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
+}
+
+/* ===== Ranked Candidate Card ===== */
+
+.rank-number {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-right: var(--space-md);
+  min-width: 36px;
+}
+
+.candidate-info {
+  flex: 1;
+}
+
+.candidate-name {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.candidate-email {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* ===== Feedback Card ===== */
+
+.feedback-job {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-dark);
+  margin-bottom: 2px;
+}
+
+.feedback-from {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.feedback-comment {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin-top: var(--space-sm);
+  line-height: 1.5;
+}
+
+/* ===== Skill Gap Page ===== */
+
+.coverage-display {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  padding: var(--space-xl);
+  background: var(--color-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.coverage-value {
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--color-dark);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.coverage-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.skills-section {
+  margin-bottom: var(--space-xl);
+}
+
+.skills-section-title {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+/* ===== Analytics Card ===== */
+
+.analytics-card {
+  background: var(--color-card);
+  border-radius: var(--radius-card);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.analytics-stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: var(--font-size-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.analytics-stat:last-child {
+  border-bottom: none;
+}
+
+.analytics-stat-label {
+  color: var(--color-text-secondary);
+}
+
+.analytics-stat-value {
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+/* ===== Upload zone ===== */
+
+.upload-zone {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--color-card);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-card);
+  margin-bottom: var(--space-xl);
+}
+
+.upload-zone input[type="file"] {
+  font-size: var(--font-size-sm);
+}
+
+/* ===== Resume card ===== */
+
+.resume-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.resume-filename {
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+/* ===== Recent matches mini ===== */
+
+.recent-match-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+  transition: background 0.2s;
+  border-radius: 4px;
+}
+
+.recent-match-item:hover {
+  background: rgba(0,0,0,0.02);
+}
+
+.recent-match-item:last-child {
+  border-bottom: none;
+}
+
+/* ===== Feedback submitted ===== */
+
+.feedback-submitted {
+  color: var(--color-green);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ===== Recent jobs list ===== */
+
+.recent-job-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.2s;
+  border-radius: 4px;
+}
+
+.recent-job-item:hover {
+  background: rgba(0,0,0,0.02);
+}
+
+.recent-job-item:last-child {
+  border-bottom: none;
+}
+

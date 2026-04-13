@@ -12,7 +12,6 @@ class FeedbackService {
       throw new Error('Not authorized');
     }
 
-    // one feedback per recruiter per candidate per job
     const existing = await feedbackRepository.findExisting(
       recruiterId,
       candidateId,
@@ -32,6 +31,10 @@ class FeedbackService {
 
   async getMyFeedback(candidateId) {
     return await feedbackRepository.findByCandidate(candidateId);
+  }
+
+  async getJobFeedbacks(jobId, recruiterId) {
+    return await feedbackRepository.findByJobForRecruiter(jobId, recruiterId);
   }
 }
 
