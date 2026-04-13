@@ -15,7 +15,7 @@ const JobsList = () => {
       try {
         const [jobsRes, resumesRes] = await Promise.all([
           api.get('/jobs'),
-          api.get('/resumes/my'),
+          api.get('/resumes/me'),
         ]);
         setJobs(jobsRes.data?.jobs || []);
         const myResumes = resumesRes.data?.resumes || [];

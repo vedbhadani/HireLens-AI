@@ -10,7 +10,7 @@ const UploadResume = () => {
 
   const fetchResumes = async () => {
     try {
-      const res = await api.get('/resumes/my');
+      const res = await api.get('/resumes/me');
       setResumes(res.data?.resumes || []);
     } catch (err) {
       // silent
