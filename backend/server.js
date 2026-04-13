@@ -28,10 +28,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
-const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').trim().replace(/\/+$/, '');
+console.log('CORS Origin:', clientUrl);
 app.use(
   cors({
-    origin: clientUrl.endsWith('/') ? clientUrl.slice(0, -1) : clientUrl,
+    origin: clientUrl,
     credentials: true,
   })
 );
